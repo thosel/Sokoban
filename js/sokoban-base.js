@@ -1,20 +1,22 @@
-﻿/*   This is the base file for the Sokoban assignment - include this one in your HTML page, before you add the main script file*/
+﻿/* This is the base file for the Sokoban assignment - include this one in your HTML page, before you add the main script file. */
 
-/*   Enum of CSS Classes for the static elements   */
-var Tiles = {
-  Wall: "tile-wall",
-  Space: "tile-space",
-  Goal: "tile-goal",
+/* Enum of CSS Classes for the static elements. */
+var Tile = {
+  wall: "tile-wall",
+  space: "tile-space",
+  goal: "tile-goal",
 };
+Object.freeze(Tile);
 
-/*   Enum of CSS Classes for the moving elements   */
-var Entities = {
-  Character: "entity-player",
-  Block: "entity-block",
-  BlockDone: "entity-block-goal",
+/* Enum of CSS Classes for the moving elements. */
+var Entity = {
+  character: "entity-player",
+  block: "entity-block",
+  blockMatch: "entity-block-match",
 };
+Object.freeze(Entity);
 
-/*  Legend
+/* Legend
     W = Wall
     B = Movable block
     P = Player starting position
