@@ -1,0 +1,47 @@
+body {
+    text-align: center;
+}
+
+main {
+    display:inline-block;
+    height: 100%;
+    border: 1px solid black;
+}
+
+.tile-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.tile {
+    width: 30px;
+    height: 30px;
+}
+
+.tile-wall {
+    background-color: black;
+}
+
+.tile-space {
+    background-color: tan;
+}
+
+.tile-goal {
+    background-color: silver;
+}
+
+.entity-player {
+    background-color: blue;
+}
+
+.entity-player-goal-position {
+    background-color: blue;
+}
+
+.entity-block {
+    background-color: brown;
+}
+
+.entity-block-match {
+    background-color: gold;
+}
