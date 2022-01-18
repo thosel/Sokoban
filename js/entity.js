@@ -23,7 +23,7 @@ class Entity {
 
     updateToNewPosition(elementType) {
         this.setPosition(
-            this.positionX + this.directionX, 
+            this.positionX + this.directionX,
             this.positionY + this.directionY);
 
         this.elementType = elementType;

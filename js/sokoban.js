@@ -1,8 +1,8 @@
 class Sokoban {
     constructor(containerElement, tileMap) {
         this.containerElement = containerElement;
-
         this.player = new Entity();
+        this.blocksLeftToMatch = 0;
 
         this.drawTileMap(tileMap);
     }
@@ -15,7 +15,6 @@ class Sokoban {
             for (let column = 0; column < tileMap.width; column++) {
                 let columnDivElement = document.createElement('div');
 
-                columnDivElement.appendChild(document.createTextNode(tileMap.mapGrid[row][column]));
                 columnDivElement.classList.add('tile');
 
                 switch (tileMap.mapGrid[row][column].toString()) {
@@ -32,6 +31,7 @@ class Sokoban {
                         break;
                     case 'G':
                         columnDivElement.classList.add(Tiles.goal);
+                        this.blocksLeftToMatch++;
                         break;
                     default:
                         columnDivElement.classList.add(Tiles.space);
@@ -53,10 +53,18 @@ class Sokoban {
             this.player.positionY + block.directionY);
         block.setElementType(this.getElementTypeAtPosition(block.positionX, block.positionY));
 
+        let elementType;
+        if (block.elementType === Entities.block) {
+            elementType = Tiles.space;
+        } else {
+            elementType = Tiles.goal;
+            this.blocksLeftToMatch++;
+        }
+
         this.setElementTypeAtPosition(
             block.positionX,
             block.positionY,
-            block.elementType === Entities.block ? Tiles.space : Tiles.goal);
+            elementType);
 
         switch (this.getElementTypeAtPosition(
             block.positionX + block.directionX,
@@ -66,6 +74,7 @@ class Sokoban {
                 break;
             case Tiles.goal:
                 block.updateToNewPosition(Entities.blockMatch);
+                this.blocksLeftToMatch--;
                 break;
             default:
                 break;
@@ -78,42 +87,54 @@ class Sokoban {
     }
 
     movePlayer(x, y) {
-        this.player.setDirection(x, y);
+        if (this.blocksLeftToMatch !== 0) {
+            this.player.setDirection(x, y);
 
-        if (this.isPlayerMovableToPosition(
-            this.player.positionX + this.player.directionX,
-            this.player.positionY + this.player.directionY)) {
-
-            this.setElementTypeAtPosition(
-                this.player.positionX,
-                this.player.positionY,
-                this.player.elementType === Entities.player ? Tiles.space : Tiles.goal);
-
-            switch (this.getElementTypeAtPosition(
+            if (this.isPlayerMovableToPosition(
                 this.player.positionX + this.player.directionX,
                 this.player.positionY + this.player.directionY)) {
-                case Entities.block:
-                    this.moveBlock();
-                    this.player.updateToNewPosition(Entities.player);
-                    break;
-                case Entities.blockMatch:
-                    this.moveBlock();
-                    this.player.updateToNewPosition(Entities.playerGoalPosition);
-                    break;
-                case Tiles.space:
-                    this.player.updateToNewPosition(Entities.player);
-                    break;
-                case Tiles.goal:
-                    this.player.updateToNewPosition(Entities.playerGoalPosition);
-                    break;
-                default:
-                    break;
+
+                this.setElementTypeAtPosition(
+                    this.player.positionX,
+                    this.player.positionY,
+                    this.player.elementType === Entities.player ? Tiles.space : Tiles.goal);
+
+                switch (this.getElementTypeAtPosition(
+                    this.player.positionX + this.player.directionX,
+                    this.player.positionY + this.player.directionY)) {
+                    case Entities.block:
+                        this.moveBlock();
+                        this.player.updateToNewPosition(Entities.player);
+                        break;
+                    case Entities.blockMatch:
+                        this.moveBlock();
+                        this.player.updateToNewPosition(Entities.playerGoalPosition);
+                        break;
+                    case Tiles.space:
+                        this.player.updateToNewPosition(Entities.player);
+                        break;
+                    case Tiles.goal:
+                        this.player.updateToNewPosition(Entities.playerGoalPosition);
+                        break;
+                    default:
+                        break;
+                }
+
+                this.setElementTypeAtPosition(
+                    this.player.positionX,
+                    this.player.positionY,
+                    this.player.elementType);
             }
 
-            this.setElementTypeAtPosition(
-                this.player.positionX,
-                this.player.positionY,
-                this.player.elementType);
+            this.testWinCondition();
+        }
+    }
+
+    testWinCondition() {
+        if (this.blocksLeftToMatch === 0) {
+            let gameOverMessageElement = document.createElement('h2');
+            gameOverMessageElement.appendChild(document.createTextNode('You won!'));
+            this.containerElement.appendChild(gameOverMessageElement);
         }
     }
 
